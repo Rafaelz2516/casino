@@ -12,4 +12,4 @@ import { Game, GameSchema } from './schemas/game.schema';
   controllers: [GameController],
   providers: [GameService],
 })
-export class GamesModule {}
+export class GameModule {}

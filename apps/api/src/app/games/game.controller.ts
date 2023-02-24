@@ -1,8 +1,10 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PaginateResult } from '../shared/dto/paginate-result';
+import { FindGamesQuery } from './dto/findGamesQuery.dto';
+import { GameDto } from './dto/game.dto';
 import { GameService } from './game.service';
-import { Game } from './schemas/game.schema';
 
 @Controller('/game')
 export class GameController {
@@ -10,7 +12,9 @@ export class GameController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async register(): Promise<Game[]> {
-    return [];
+  async register(
+    @Query() query?: FindGamesQuery
+  ): Promise<PaginateResult<GameDto>> {
+    return this.gameService.findAll(query);
   }
 }

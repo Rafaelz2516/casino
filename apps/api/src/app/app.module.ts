@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { GamesModule } from './games/games.module';
-import configuration from './shared/config';
+import { GameModule } from './games/games.module';
+import configuration from './shared/config/config';
 import { UserModule } from './users/user.module';
 
 @Module({
@@ -20,7 +20,7 @@ import { UserModule } from './users/user.module';
       inject: [ConfigService],
     }),
     UserModule,
-    GamesModule,
+    GameModule,
   ],
 })
 export class AppModule {}
