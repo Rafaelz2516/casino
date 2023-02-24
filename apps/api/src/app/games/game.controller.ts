@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
-import { JwtAuthGuard } from '../users/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { GameService } from './game.service';
 import { Game } from './schemas/game.schema';
 

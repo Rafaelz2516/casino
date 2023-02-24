@@ -1,14 +1,20 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
+import { User } from '../users/schemas/user.schema';
+import { UserService } from '../users/user.service';
 import { JWTTokenResponse } from './dto/login.dto';
-import { User } from './schemas/user.schema';
-import { UserService } from './user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly jwtService: JwtService
   ) {}
