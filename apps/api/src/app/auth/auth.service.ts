@@ -11,6 +11,7 @@ import { User } from '../users/schemas/user.schema';
 import { UserService } from '../users/user.service';
 import { JWTTokenResponse } from './dto/login.dto';
 
+const AUTH_ERROR_MSG = 'User credentials are wrong or user does not exist!';
 @Injectable()
 export class AuthService {
   constructor(
@@ -25,7 +26,7 @@ export class AuthService {
   ): Promise<JWTTokenResponse> {
     const user = await this.validateUser(username, password);
     if (!user) {
-      throw new BadRequestException('User Credentials are wrong!');
+      throw new BadRequestException(AUTH_ERROR_MSG);
     }
     try {
       const token = await this.jwtService.signAsync(
@@ -43,6 +44,9 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<User> {
     const user = await this.userService.findByUsername(username);
+    if (!user) {
+      throw new BadRequestException(AUTH_ERROR_MSG);
+    }
     const isValidPassword = await this.verifyPassword(password, user.password);
     if (isValidPassword) {
       return user;

@@ -1,5 +1,14 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserDto } from './dto/user.dto';
 import { UserService } from './user.service';
@@ -15,5 +24,11 @@ export class UserController {
     } catch (error) {
       throw new BadRequestException('Registration failed');
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  getCurrentUser(@Request() req): UserDto {
+    return new UserDto(req.user);
   }
 }
