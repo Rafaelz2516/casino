@@ -8,7 +8,7 @@ interface fetchWrapProps {
 }
 
 const fetchWrap = async ({ method, url, body }: fetchWrapProps) => {
-  const jwtToken = localStorage.getItem('jwtToken');
+  const jwtToken = sessionStorage.getItem('jwtToken');
   const config = {
     baseURL: 'http://localhost:3333/api',
     headers: {

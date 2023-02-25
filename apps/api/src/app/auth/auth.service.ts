@@ -7,6 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
+import { UserDto } from '../users/dto/user.dto';
 import { User } from '../users/schemas/user.schema';
 import { UserService } from '../users/user.service';
 import { JWTTokenResponse } from './dto/login.dto';
@@ -36,9 +37,9 @@ export class AuthService {
         },
         {}
       );
-      return { token };
+      return { token, user: new UserDto(user) };
     } catch (e) {
-      return { token: null };
+      return { token: null, user: null };
     }
   }
 

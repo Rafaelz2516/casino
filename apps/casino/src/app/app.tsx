@@ -7,6 +7,7 @@ import { getUser } from './api/user';
 import { isLoggedInAtom, userAtom } from './atom';
 import Header from './components/Header';
 import Loading from './components/Loading';
+import Games from './pages/Games';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -19,7 +20,7 @@ const App = () => {
 
   useEffect(() => {
     const initApp = async () => {
-      const hasToken = !!localStorage.getItem('jwtToken');
+      const hasToken = !!sessionStorage.getItem('jwtToken');
       if (!hasToken) return;
       try {
         const user = await getUser();
@@ -27,7 +28,7 @@ const App = () => {
         setIsLoggedIn(true);
         setUser({  username: username, birthDate: new Date(birthDate), balance: balance });
       } catch (e: any) {
-        localStorage.removeItem('jwtToken');
+        sessionStorage.removeItem('jwtToken');
         setIsLoggedIn(false);
         setUser({   username: '', birthDate: new Date(), balance: 0 });
       }
@@ -44,6 +45,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/games" element={<Games />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} />
         </Routes>
       </HashRouter>

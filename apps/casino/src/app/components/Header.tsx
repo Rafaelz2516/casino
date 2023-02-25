@@ -1,14 +1,14 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { isLoggedInAtom, userAtom } from '../atom';
 
 const Header = () => {
-  const setUser = useSetRecoilState(userAtom);
+  const [user, setUser] = useRecoilState(userAtom);
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLoggedInAtom);
   const navigate = useNavigate();
   const onLogout = (): void => {
-    localStorage.removeItem('jwtToken');
+    sessionStorage.removeItem('jwtToken');
     setIsLoggedIn(false);
     setUser({ username: '', birthDate: new Date(), balance: 0 });
     navigate('/', { replace: true });
@@ -24,7 +24,7 @@ const Header = () => {
             </span>
           </NavLink>
 
-          <div className="flex items-center lg:order-2">
+          <div className="flex items-center gap-3 lg:order-2">
             {!isLoggedIn && (
               <>
                 <NavLink to="/login" className="flex items-center">
@@ -41,6 +41,8 @@ const Header = () => {
             )}
 
             {isLoggedIn && (
+              <>
+              <p className='text-white'>Hi {user.username}</p>
               <button
                 type="button"
                 onClick={onLogout}
@@ -48,6 +50,7 @@ const Header = () => {
               >
                 Logout
               </button>
+              </>
             )}
           </div>
         </div>

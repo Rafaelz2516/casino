@@ -1,4 +1,4 @@
-import { ErrorMessage, Field, Form, Formik, FormikErrors, FormikHelpers } from 'formik';
+import { ErrorMessage, Field, Form, Formik, FormikErrors } from 'formik';
 import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
@@ -25,12 +25,11 @@ const Login = () => {
         username: values.username,
         password: values.password,
       });
-      localStorage.setItem('jwtToken', data.token);
+      sessionStorage.setItem('jwtToken', data.token);
       setIsLoggedIn(true);
       setUser(data.user);
       navigate('/', { replace: true });
     } catch (e: any) {
-      console.log(e);
       setError(e.response.data.message)
     }
   };
@@ -40,7 +39,6 @@ const Login = () => {
   }, [isLoggedIn, navigate]);
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -61,8 +59,7 @@ const Login = () => {
                 return errors;
               }}
               onSubmit={(
-                values: LoginFormValues,
-                { setSubmitting }: FormikHelpers<LoginFormValues>
+                values: LoginFormValues
               ) => onLogin(values)}
             >
               {({ isSubmitting }) => (
@@ -151,7 +148,6 @@ const Login = () => {
           </div>
         </div>
       </div>
-    </section>
   );
 };
 
