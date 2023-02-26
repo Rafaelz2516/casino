@@ -11,7 +11,7 @@ export class Game {
   @Prop({ unique: true, type: String })
   name: string;
 
-  @Prop({ unique: true, type: String })
+  @Prop({ type: String })
   description: string;
 }
 

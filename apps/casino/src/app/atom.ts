@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom, selector } from 'recoil';
 
 export const isLoggedInAtom = atom({
   key: 'isLoggedInAtom',
@@ -12,4 +12,9 @@ export const userAtom = atom({
     birthDate: new Date(),
     balance: 0,
   },
+});
+
+export const userBalance = selector({
+  key: 'userBalance',
+  get: ({ get }) => get(userAtom).balance,
 });

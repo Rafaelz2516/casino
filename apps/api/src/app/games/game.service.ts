@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -8,7 +8,7 @@ import { FindGamesQuery } from './dto/findGamesQuery.dto';
 import { GameDto } from './dto/game.dto';
 import { Game, GameDocument } from './schemas/game.schema';
 
-const PAGE_LIMIT = 4;
+const PAGE_LIMIT = 8;
 @Injectable()
 export class GameService {
   constructor(
@@ -17,14 +17,16 @@ export class GameService {
     this.createInitialGames(); // only to fill the DB
   }
 
-  async findAll(
-    queryParams?: FindGamesQuery
-  ): Promise<PaginateResult<GameDto>> {
-    console.log(queryParams);
-    const offset = (queryParams?.page && queryParams.page * PAGE_LIMIT) || 0;
-
+  async findAll({
+    page: pageParam,
+    name,
+  }: FindGamesQuery): Promise<PaginateResult<GameDto>> {
+    const offset = (pageParam && pageParam * PAGE_LIMIT) || 0;
+    const filter = name
+      ? { name: { $regex: '.*' + name + '.*', $options: 'i' } }
+      : null;
     const games = await this.gameModel
-      .find()
+      .find(filter)
       .sort({ createdAt: -1 })
       .skip(offset)
       .limit(PAGE_LIMIT)
@@ -37,6 +39,13 @@ export class GameService {
     return { results: games, totalResults, totalPages, page };
   }
 
+  async findByName(name: string): Promise<GameDto> {
+    const game = await this.gameModel.findOne({ name }).lean();
+    if (!game) {
+      throw new NotFoundException(`Game with the name: ${name} not found!`);
+    }
+    return new GameDto(game);
+  }
   async createInitialGames(): Promise<void> {
     const totalResults = await this.gameModel.count().exec();
     if (totalResults === 0) {
