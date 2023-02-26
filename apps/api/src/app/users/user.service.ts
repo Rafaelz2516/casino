@@ -1,4 +1,10 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -27,5 +33,35 @@ export class UserService {
 
   async findByUsername(username: string): Promise<User> {
     return await this.userModel.findOne({ username }).lean();
+  }
+
+  async update(value: number, currentUser: User): Promise<User> {
+    if (value > currentUser.balance) {
+      throw new NotAcceptableException('Not enough balance!');
+    }
+    const won = Math.round(Math.random() * 1) % 2 === 0;
+    const balance = won
+      ? currentUser.balance + value * 2
+      : currentUser.balance - value;
+    const update = {
+      ...currentUser,
+      balance,
+      updatedAt: new Date(),
+    };
+
+    const user = await this.userModel.findOneAndUpdate(
+      { username: currentUser.username },
+      update,
+      {
+        new: true,
+        useFindAndModify: false,
+      }
+    );
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    return user;
   }
 }

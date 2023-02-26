@@ -32,9 +32,8 @@ const List = ({ query }: ListProps) => {
         );
         setIsLastPage(data.totalPages - data.page === 1);
         setLoading(false);
-      } catch (e) {
-        console.error(e);
-      }
+      // eslint-disable-next-line no-empty
+      } catch (e) {}
     };
 
     initGames();
